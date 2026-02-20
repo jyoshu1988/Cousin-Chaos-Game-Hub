@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cousin Chaos Game Hub</title>
+  <style>
+    :root {
+      --bg: #070b11;
+      --panel: #0f1624;
+      --panel-2: #131d30;
+      --text: #d9ffe8;
+      --muted: #88a7a0;
+      --neon: #00ff9d;
+      --danger: #ff4d6d;
+      --warn: #ffb703;
+      --blue: #35b0ff;
+      --radius: 14px;
+      --shadow: 0 0 20px rgba(0, 255, 157, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(circle at top right, #102038 0%, var(--bg) 45%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .container {
+      width: min(1100px, 94vw);
+      margin: 24px auto;
+      animation: fadeIn 0.35s ease;
+    }
+
+    .hidden { display: none !important; }
+
+    .panel {
+      background: linear-gradient(145deg, var(--panel), var(--panel-2));
+      border: 1px solid rgba(0, 255, 157, 0.15);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      margin-bottom: 16px;
+      transition: transform .25s ease, border-color .25s ease;
+    }
+
+    .panel:hover {
+      transform: translateY(-2px);
+      border-color: rgba(0, 255, 157, 0.35);
+    }
+
+    h1, h2, h3 { margin-top: 0; letter-spacing: 0.4px; }
+
+    .title-glow {
+      color: var(--neon);
+      text-shadow: 0 0 8px rgba(0, 255, 157, 0.6);
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .dashboard-grid {
+      grid-template-columns: 1.1fr 1fr;
+    }
+
+    @media (max-width: 840px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+    }
+
+    input, select, textarea, button {
+      font: inherit;
+      border-radius: 10px;
+      border: 1px solid rgba(136, 167, 160, 0.4);
+      padding: 10px 12px;
+      background: #0b1422;
+      color: var(--text);
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(53, 176, 255, 0.2);
+    }
+
+    button {
+      cursor: pointer;
+      border-color: rgba(0,255,157,.35);
+      background: linear-gradient(180deg, #123128, #0d201b);
+      color: var(--text);
+      font-weight: 600;
+      letter-spacing: .3px;
+      transition: transform .12s ease, filter .2s ease;
+    }
+
+    button:hover { filter: brightness(1.12); }
+    button:active { transform: scale(0.97); }
+
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    .muted { color: var(--muted); font-size: .95rem; }
+    .danger { color: var(--danger); }
+    .warn { color: var(--warn); }
+
+    .leaderboard-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 10px;
+      border: 1px solid rgba(136, 167, 160, 0.2);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      background: rgba(7, 11, 17, 0.55);
+    }
+
+    .games-grid, .shop-grid {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .card {
+      border: 1px solid rgba(0, 255, 157, 0.14);
+      border-radius: 12px;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.18);
+    }
+
+    .status {
+      min-height: 1.4em;
+      margin-top: 8px;
+      font-weight: 600;
+    }
+
+    .click-zone {
+      width: 100%;
+      min-height: 90px;
+      border: 2px dashed rgba(0,255,157,.35);
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      margin-top: 10px;
+      user-select: none;
+    }
+
+    .reaction-box {
+      height: 130px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: #1b273f;
+      margin-top: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s ease;
+    }
+
+    .pill {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: .8rem;
+      border: 1px solid rgba(136, 167, 160, 0.35);
+      margin-left: 8px;
+    }
+
+    .request-item {
+      border-left: 3px solid var(--blue);
+      padding: 8px 12px;
+      background: rgba(10,18,31,.65);
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section id="loginView" class="panel">
+      <h1 class="title-glow">Cousin Chaos Game Hub</h1>
+      <p class="muted">Welcome, cousins. Hack in, chaos out.</p>
+      <div class="grid" style="max-width: 420px;">
+        <input id="loginUsername" placeholder="Username" />
+        <input id="loginPassword" type="password" placeholder="Password" />
+        <button id="loginBtn">Login</button>
+      </div>
+      <p class="muted">Default accounts: vriti, hriday, hridam, humeesha (password format: name + 123)</p>
+      <p id="loginStatus" class="status"></p>
+    </section>
+
+    <section id="dashboardView" class="hidden">
+      <div class="panel">
+        <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;">
+          <h2>Dashboard <span id="roleBadge" class="pill"></span></h2>
+          <button id="logoutBtn">Logout</button>
+        </div>
+        <div class="dashboard-grid grid">
+          <div class="panel" style="margin:0;">
+            <h3 id="welcomeText"></h3>
+            <p><strong>Current Points:</strong> <span id="currentPoints">0</span></p>
+            <p><strong>Shield:</strong> <span id="shieldStatus">inactive</span></p>
+            <p><strong>Double Reward:</strong> <span id="doubleStatus">inactive</span></p>
+            <div class="btn-row">
+              <button id="showGamesBtn">Play Games</button>
+              <button id="showShopBtn">Points Shop</button>
+              <button id="showRequestBtn">Request Creator</button>
+            </div>
+          </div>
+          <div class="panel" style="margin:0;">
+            <h3>Leaderboard</h3>
+            <div id="leaderboard"></div>
+          </div>
+        </div>
+      </div>
+
+      <section id="gamesSection" class="panel hidden">
+        <h2>Mini Games Arena</h2>
+        <p class="muted">Win any game to get <strong>+10 points</strong> (or +20 with Double Reward).</p>
+
+        <div class="grid games-grid">
+          <div class="card">
+            <h3>1) Number Guessing</h3>
+            <p class="muted">Guess 1–10. Two attempts.</p>
+            <input id="guessInput" type="number" min="1" max="10" placeholder="Your guess" />
+            <button id="guessBtn">Submit Guess</button>
+            <p id="guessStatus" class="status"></p>
+          </div>
+
+          <div class="card">
+            <h3>2) Quiz (5 Questions)</h3>
+            <p id="quizQuestion">Press start.</p>
+            <div id="quizOptions" class="btn-row"></div>
+            <button id="quizStartBtn">Start Quiz</button>
+            <p id="quizStatus" class="status"></p>
+          </div>
+
+          <div class="card">
+            <h3>3) Click Speed (10s)</h3>
+            <p>Clicks: <span id="clickCount">0</span> | Time: <span id="clickTimer">10</span>s</p>
+            <button id="clickStartBtn">Start Click Rush</button>
+            <div id="clickZone" class="click-zone">Click me repeatedly!</div>
+            <p id="clickStatus" class="status"></p>
+          </div>
+
+          <div class="card">
+            <h3>4) Rock Paper Scissors</h3>
+            <div class="btn-row">
+              <button class="rps-btn" data-pick="rock">Rock</button>
+              <button class="rps-btn" data-pick="paper">Paper</button>
+              <button class="rps-btn" data-pick="scissors">Scissors</button>
+            </div>
+            <p id="rpsStatus" class="status"></p>
+          </div>
+
+          <div class="card">
+            <h3>5) Reaction Time</h3>
+            <button id="reactionStartBtn">Start Reaction Test</button>
+            <div id="reactionBox" class="reaction-box">Wait for green...</div>
+            <p id="reactionStatus" class="status"></p>
+          </div>
+        </div>
+      </section>
+
+      <section id="shopSection" class="panel hidden">
+        <h2>Points Shop (Chaotic Edition)</h2>
+        <div class="grid shop-grid">
+          <div class="card">
+            <h3>Steal 10 points (Cost 20)</h3>
+            <select id="stealTarget"></select>
+            <button id="stealBtn">Steal</button>
+          </div>
+          <div class="card">
+            <h3>Gift 10 points</h3>
+            <select id="giftTarget"></select>
+            <button id="giftBtn">Gift</button>
+          </div>
+          <div class="card">
+            <h3>Double Next Reward (Cost 15)</h3>
+            <button id="doubleBtn">Activate</button>
+          </div>
+          <div class="card">
+            <h3>Shield (Cost 15)</h3>
+            <button id="shieldBtn">Buy Shield</button>
+          </div>
+          <div class="card">
+            <h3>Random Luck Spin (Cost 10)</h3>
+            <button id="luckBtn">Spin</button>
+          </div>
+          <div class="card">
+            <h3>Swap Points (Cost 25)</h3>
+            <select id="swapTarget"></select>
+            <button id="swapBtn">Swap</button>
+          </div>
+        </div>
+        <p id="shopStatus" class="status"></p>
+      </section>
+
+      <section id="requestSection" class="panel hidden">
+        <h2>Request Creator</h2>
+        <div class="grid" style="max-width: 600px;">
+          <input id="requestName" placeholder="Game Name" />
+          <textarea id="requestDesc" rows="4" placeholder="Describe your awesome chaos game..."></textarea>
+          <button id="submitRequestBtn">Submit Request</button>
+        </div>
+        <p id="requestStatus" class="status"></p>
+      </section>
+
+      <section id="adminPanel" class="panel hidden">
+        <h2>Creator / Admin Panel</h2>
+        <div class="grid dashboard-grid">
+          <div>
+            <h3>Game Requests</h3>
+            <div id="requestsList"></div>
+          </div>
+          <div>
+            <h3>Admin Actions</h3>
+            <div class="card" style="margin-bottom:10px;">
+              <button id="globalEventBtn">Trigger Global Random Event</button>
+              <p id="eventStatus" class="status"></p>
+            </div>
+            <div class="card">
+              <h4>Modify User Points</h4>
+              <select id="modUser"></select>
+              <input id="modPoints" type="number" placeholder="Set exact points" />
+              <button id="applyModBtn">Apply</button>
+              <p id="modStatus" class="status"></p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+  </div>
+
+  <script>
+    // ---------- Storage & state ----------
+    const LS_USERS = "cchg_users";
+    const LS_CURRENT = "cchg_current_user";
+    const LS_REQUESTS = "cchg_requests";
+
+    const defaultUsers = [
+      { username: "vriti", password: "vriti123", points: 50, role: "normal", shield: false, doubleNext: false },
+      { username: "hriday", password: "hriday123", points: 50, role: "normal", shield: false, doubleNext: false },
+      { username: "hridam", password: "hridam123", points: 50, role: "normal", shield: false, doubleNext: false },
+      { username: "humeesha", password: "humeesha123", points: 50, role: "creator", shield: false, doubleNext: false }
+    ];
+
+    const state = {
+      currentUser: null,
+      guessingTarget: null,
+      guessingAttempts: 0,
+      quizIndex: 0,
+      quizScore: 0,
+      quizActive: false,
+      clickActive: false,
+      clickCount: 0,
+      clickTimeLeft: 10,
+      clickInterval: null,
+      reactionArmed: false,
+      reactionStartMs: 0,
+      reactionTimeout: null,
+    };
+
+    const quizQuestions = [
+      { q: "Which planet is known as the Red Planet?", options: ["Mars", "Venus", "Mercury"], answer: "Mars" },
+      { q: "2 + 8 = ?", options: ["9", "10", "11"], answer: "10" },
+      { q: "JavaScript runs in the...?", options: ["Browser", "Toaster", "Notebook"], answer: "Browser" },
+      { q: "CSS stands for?", options: ["Cool Sheet Syntax", "Cascading Style Sheets", "Colorful Style Stack"], answer: "Cascading Style Sheets" },
+      { q: "Fastest finger wins in which game here?", options: ["Click Speed", "Quiz", "RPS"], answer: "Click Speed" }
+    ];
+
+    const $ = (id) => document.getElementById(id);
+
+    function loadUsers() {
+      return JSON.parse(localStorage.getItem(LS_USERS) || "null") || structuredClone(defaultUsers);
+    }
+
+    function saveUsers(users) {
+      localStorage.setItem(LS_USERS, JSON.stringify(users));
+    }
+
+    function loadRequests() {
+      return JSON.parse(localStorage.getItem(LS_REQUESTS) || "[]");
+    }
+
+    function saveRequests(requests) {
+      localStorage.setItem(LS_REQUESTS, JSON.stringify(requests));
+    }
+
+    function setCurrentUser(username) {
+      localStorage.setItem(LS_CURRENT, username);
+      state.currentUser = username;
+    }
+
+    function getCurrentUserObj() {
+      const users = loadUsers();
+      return users.find(u => u.username === state.currentUser);
+    }
+
+    function updateUser(username, patch) {
+      const users = loadUsers();
+      const idx = users.findIndex(u => u.username === username);
+      if (idx >= 0) {
+        users[idx] = { ...users[idx], ...patch };
+        saveUsers(users);
+      }
+    }
+
+    function adjustPoints(username, delta) {
+      const users = loadUsers();
+      const user = users.find(u => u.username === username);
+      if (!user) return;
+      user.points = Math.max(0, user.points + delta);
+      saveUsers(users);
+    }
+
+    function rewardWin(messageTargetId, base = 10) {
+      const user = getCurrentUserObj();
+      if (!user) return;
+      let reward = base;
+      if (user.doubleNext) {
+        reward *= 2;
+        updateUser(user.username, { doubleNext: false });
+      }
+      adjustPoints(user.username, reward);
+      $(messageTargetId).textContent = `You won! +${reward} points.`;
+      refreshDashboard();
+    }
+
+    function requirePoints(amount, statusId) {
+      const user = getCurrentUserObj();
+      if (!user || user.points < amount) {
+        $(statusId).textContent = `Not enough points (need ${amount}).`;
+        return false;
+      }
+      adjustPoints(user.username, -amount);
+      return true;
+    }
+
+    // ---------- UI refresh ----------
+    function refreshLeaderboard() {
+      const users = loadUsers().sort((a,b) => b.points - a.points);
+      $("leaderboard").innerHTML = users.map((u, i) =>
+        `<div class="leaderboard-item"><span>#${i+1} ${u.username}</span><strong>${u.points}</strong></div>`
+      ).join("");
+    }
+
+    function populateUserSelects() {
+      const users = loadUsers().filter(u => u.username !== state.currentUser);
+      const html = users.map(u => `<option value="${u.username}">${u.username}</option>`).join("");
+      ["stealTarget","giftTarget","swapTarget"].forEach(id => $(id).innerHTML = html);
+
+      const allUsers = loadUsers();
+      $("modUser").innerHTML = allUsers.map(u => `<option value="${u.username}">${u.username}</option>`).join("");
+    }
+
+    function refreshDashboard() {
+      const user = getCurrentUserObj();
+      if (!user) return;
+      $("welcomeText").textContent = `Hey ${user.username}, ready for chaos?`;
+      $("currentPoints").textContent = user.points;
+      $("roleBadge").textContent = user.role;
+      $("shieldStatus").textContent = user.shield ? "active" : "inactive";
+      $("doubleStatus").textContent = user.doubleNext ? "armed" : "inactive";
+      refreshLeaderboard();
+      populateUserSelects();
+
+      const isAdmin = user.role === "creator";
+      $("adminPanel").classList.toggle("hidden", !isAdmin);
+      if (isAdmin) renderRequests();
+    }
+
+    function showView(mainLoggedIn) {
+      $("loginView").classList.toggle("hidden", mainLoggedIn);
+      $("dashboardView").classList.toggle("hidden", !mainLoggedIn);
+    }
+
+    function showSection(sectionId) {
+      ["gamesSection", "shopSection", "requestSection"].forEach(id => {
+        $(id).classList.toggle("hidden", id !== sectionId);
+      });
+    }
+
+    // ---------- Login ----------
+    function initData() {
+      if (!localStorage.getItem(LS_USERS)) saveUsers(defaultUsers);
+      if (!localStorage.getItem(LS_REQUESTS)) saveRequests([]);
+    }
+
+    function login() {
+      const username = $("loginUsername").value.trim().toLowerCase();
+      const password = $("loginPassword").value.trim();
+      const user = loadUsers().find(u => u.username === username && u.password === password);
+      if (!user) {
+        $("loginStatus").textContent = "Invalid login. Try again, agent.";
+        return;
+      }
+      setCurrentUser(user.username);
+      showView(true);
+      refreshDashboard();
+      showSection("gamesSection");
+      $("loginStatus").textContent = "";
+    }
+
+    function logout() {
+      localStorage.removeItem(LS_CURRENT);
+      state.currentUser = null;
+      showView(false);
+    }
+
+    // ---------- Games ----------
+    function initNumberGuess() {
+      state.guessingTarget = Math.floor(Math.random() * 10) + 1;
+      state.guessingAttempts = 2;
+      $("guessStatus").textContent = "New round started.";
+    }
+
+    function playNumberGuess() {
+      const guess = Number($("guessInput").value);
+      if (guess < 1 || guess > 10) {
+        $("guessStatus").textContent = "Enter a number from 1 to 10.";
+        return;
+      }
+      state.guessingAttempts--;
+      if (guess === state.guessingTarget) {
+        rewardWin("guessStatus");
+        initNumberGuess();
+      } else if (state.guessingAttempts > 0) {
+        $("guessStatus").textContent = `Nope. ${state.guessingAttempts} attempt left.`;
+      } else {
+        $("guessStatus").textContent = `Lost. Number was ${state.guessingTarget}.`;
+        initNumberGuess();
+      }
+    }
+
+    function startQuiz() {
+      state.quizActive = true;
+      state.quizIndex = 0;
+      state.quizScore = 0;
+      renderQuizQuestion();
+      $("quizStatus").textContent = "Quiz started!";
+    }
+
+    function renderQuizQuestion() {
+      if (!state.quizActive) return;
+      const item = quizQuestions[state.quizIndex];
+      if (!item) {
+        state.quizActive = false;
+        if (state.quizScore >= 4) rewardWin("quizStatus");
+        else $("quizStatus").textContent = `Quiz over. Score ${state.quizScore}/5. Need 4+ to win points.`;
+        $("quizOptions").innerHTML = "";
+        $("quizQuestion").textContent = "Press start for another quiz.";
+        return;
+      }
+      $("quizQuestion").textContent = `${state.quizIndex + 1}. ${item.q}`;
+      $("quizOptions").innerHTML = item.options
+        .map(opt => `<button class="quiz-opt" data-opt="${opt}">${opt}</button>`)
+        .join("");
+      document.querySelectorAll(".quiz-opt").forEach(btn => {
+        btn.onclick = () => {
+          if (btn.dataset.opt === item.answer) state.quizScore++;
+          state.quizIndex++;
+          renderQuizQuestion();
+        };
+      });
+    }
+
+    function startClickGame() {
+      state.clickActive = true;
+      state.clickCount = 0;
+      state.clickTimeLeft = 10;
+      $("clickCount").textContent = "0";
+      $("clickTimer").textContent = "10";
+      $("clickStatus").textContent = "Tap like lightning! Goal: 35 clicks.";
+      clearInterval(state.clickInterval);
+      state.clickInterval = setInterval(() => {
+        state.clickTimeLeft--;
+        $("clickTimer").textContent = state.clickTimeLeft;
+        if (state.clickTimeLeft <= 0) {
+          clearInterval(state.clickInterval);
+          state.clickActive = false;
+          if (state.clickCount >= 35) rewardWin("clickStatus");
+          else $("clickStatus").textContent = `Only ${state.clickCount} clicks. You need 35.`;
+        }
+      }, 1000);
+    }
+
+    function clickRushTap() {
+      if (!state.clickActive) return;
+      state.clickCount++;
+      $("clickCount").textContent = state.clickCount;
+    }
+
+    function playRPS(pick) {
+      const choices = ["rock", "paper", "scissors"];
+      const bot = choices[Math.floor(Math.random() * choices.length)];
+      if (pick === bot) {
+        $("rpsStatus").textContent = `Tie! You both picked ${pick}.`;
+        return;
+      }
+      const win = (pick === "rock" && bot === "scissors")
+        || (pick === "paper" && bot === "rock")
+        || (pick === "scissors" && bot === "paper");
+      if (win) {
+        rewardWin("rpsStatus");
+        $("rpsStatus").textContent += ` Bot played ${bot}.`;
+      } else {
+        $("rpsStatus").textContent = `Lost! Bot played ${bot}.`;
+      }
+    }
+
+    function startReaction() {
+      state.reactionArmed = false;
+      clearTimeout(state.reactionTimeout);
+      $("reactionStatus").textContent = "Wait for green, then click FAST.";
+      const box = $("reactionBox");
+      box.style.background = "#7a1f2f";
+      box.textContent = "Wait...";
+      const delay = 1200 + Math.random() * 2800;
+      state.reactionTimeout = setTimeout(() => {
+        state.reactionArmed = true;
+        state.reactionStartMs = performance.now();
+        box.style.background = "#0ea765";
+        box.textContent = "CLICK NOW!";
+      }, delay);
+    }
+
+    function handleReactionClick() {
+      const box = $("reactionBox");
+      if (!state.reactionArmed) {
+        $("reactionStatus").textContent = "Too early! No reward for panic clicking.";
+        return;
+      }
+      const ms = Math.round(performance.now() - state.reactionStartMs);
+      state.reactionArmed = false;
+      box.style.background = "#1b273f";
+      box.textContent = "Wait for green...";
+      if (ms <= 350) {
+        rewardWin("reactionStatus");
+        $("reactionStatus").textContent += ` Reaction: ${ms}ms.`;
+      } else {
+        $("reactionStatus").textContent = `Reaction ${ms}ms. Need 350ms or less.`;
+      }
+    }
+
+    // ---------- Shop ----------
+    function stealPoints() {
+      if (!requirePoints(20, "shopStatus")) return;
+      const me = getCurrentUserObj();
+      const targetName = $("stealTarget").value;
+      const users = loadUsers();
+      const target = users.find(u => u.username === targetName);
+      if (!target) return;
+
+      if (target.shield) {
+        target.shield = false;
+        saveUsers(users);
+        $("shopStatus").textContent = `${target.username}'s shield blocked your steal!`;
+        refreshDashboard();
+        return;
+      }
+
+      const stolen = Math.min(10, target.points);
+      target.points -= stolen;
+      const meObj = users.find(u => u.username === me.username);
+      meObj.points += stolen;
+      saveUsers(users);
+      $("shopStatus").textContent = `You stole ${stolen} points from ${target.username}.`;
+      refreshDashboard();
+    }
+
+    function giftPoints() {
+      const targetName = $("giftTarget").value;
+      const me = getCurrentUserObj();
+      if (me.points < 10) {
+        $("shopStatus").textContent = "Need at least 10 points to gift.";
+        return;
+      }
+      const users = loadUsers();
+      const meObj = users.find(u => u.username === me.username);
+      const target = users.find(u => u.username === targetName);
+      if (!target) return;
+      meObj.points -= 10;
+      target.points += 10;
+      saveUsers(users);
+      $("shopStatus").textContent = `Gifted 10 points to ${targetName}.`;
+      refreshDashboard();
+    }
+
+    function buyDouble() {
+      if (!requirePoints(15, "shopStatus")) return;
+      updateUser(state.currentUser, { doubleNext: true });
+      $("shopStatus").textContent = "Double reward activated for your next win.";
+      refreshDashboard();
+    }
+
+    function buyShield() {
+      if (!requirePoints(15, "shopStatus")) return;
+      updateUser(state.currentUser, { shield: true });
+      $("shopStatus").textContent = "Shield acquired. Next steal attempt against you is blocked.";
+      refreshDashboard();
+    }
+
+    function luckSpin() {
+      if (!requirePoints(10, "shopStatus")) return;
+      const outcomes = [-20, -10, -5, 5, 10, 15, 25];
+      const delta = outcomes[Math.floor(Math.random() * outcomes.length)];
+      adjustPoints(state.currentUser, delta);
+      $("shopStatus").textContent = delta >= 0
+        ? `Lucky spin! You gained ${delta} points.`
+        : `Chaos spin! You lost ${Math.abs(delta)} points.`;
+      refreshDashboard();
+    }
+
+    function swapPoints() {
+      if (!requirePoints(25, "shopStatus")) return;
+      const targetName = $("swapTarget").value;
+      const users = loadUsers();
+      const me = users.find(u => u.username === state.currentUser);
+      const target = users.find(u => u.username === targetName);
+      if (!target || !me) return;
+      [me.points, target.points] = [target.points, me.points];
+      saveUsers(users);
+      $("shopStatus").textContent = `You swapped points with ${targetName}. Total chaos.`;
+      refreshDashboard();
+    }
+
+    // ---------- Requests / Admin ----------
+    function submitRequest() {
+      const name = $("requestName").value.trim();
+      const description = $("requestDesc").value.trim();
+      if (!name || !description) {
+        $("requestStatus").textContent = "Fill both fields.";
+        return;
+      }
+      const requests = loadRequests();
+      requests.push({
+        id: Date.now(),
+        from: state.currentUser,
+        gameName: name,
+        description,
+        status: "pending"
+      });
+      saveRequests(requests);
+      $("requestName").value = "";
+      $("requestDesc").value = "";
+      $("requestStatus").textContent = "Request submitted to creator.";
+      renderRequests();
+    }
+
+    function renderRequests() {
+      const requests = loadRequests();
+      if (!requests.length) {
+        $("requestsList").innerHTML = "<p class='muted'>No requests yet.</p>";
+        return;
+      }
+      $("requestsList").innerHTML = requests.map(r => `
+        <div class="request-item">
+          <strong>${r.gameName}</strong> by ${r.from}
+          <p class="muted">${r.description}</p>
+          <p>Status: <strong>${r.status}</strong></p>
+          <div class="btn-row">
+            <button onclick="updateRequest(${r.id}, 'approved')">Approve</button>
+            <button onclick="updateRequest(${r.id}, 'rejected')">Reject</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    window.updateRequest = function(id, status) {
+      const requests = loadRequests();
+      const req = requests.find(r => r.id === id);
+      if (!req) return;
+      req.status = status;
+      saveRequests(requests);
+      renderRequests();
+    };
+
+    function globalEvent() {
+      const users = loadUsers();
+      const roll = Math.random();
+      let msg = "";
+      if (roll < 0.33) {
+        users.forEach(u => u.points += 8);
+        msg = "Solar flare bonus: everyone gains +8 points.";
+      } else if (roll < 0.66) {
+        users.forEach(u => u.points = Math.max(0, u.points - 6));
+        msg = "Blackout tax: everyone loses 6 points.";
+      } else {
+        const lucky = users[Math.floor(Math.random() * users.length)];
+        lucky.points += 25;
+        msg = `Chaos crown: ${lucky.username} gains +25 points!`;
+      }
+      saveUsers(users);
+      $("eventStatus").textContent = msg;
+      refreshDashboard();
+    }
+
+    function modifyPoints() {
+      const user = $("modUser").value;
+      const pts = Number($("modPoints").value);
+      if (Number.isNaN(pts) || pts < 0) {
+        $("modStatus").textContent = "Enter a valid non-negative number.";
+        return;
+      }
+      updateUser(user, { points: pts });
+      $("modStatus").textContent = `Updated ${user} to ${pts} points.`;
+      refreshDashboard();
+    }
+
+    // ---------- Bind events ----------
+    $("loginBtn").onclick = login;
+    $("logoutBtn").onclick = logout;
+
+    $("showGamesBtn").onclick = () => showSection("gamesSection");
+    $("showShopBtn").onclick = () => showSection("shopSection");
+    $("showRequestBtn").onclick = () => showSection("requestSection");
+
+    $("guessBtn").onclick = playNumberGuess;
+    $("quizStartBtn").onclick = startQuiz;
+    $("clickStartBtn").onclick = startClickGame;
+    $("clickZone").onclick = clickRushTap;
+    document.querySelectorAll(".rps-btn").forEach(btn => btn.onclick = () => playRPS(btn.dataset.pick));
+    $("reactionStartBtn").onclick = startReaction;
+    $("reactionBox").onclick = handleReactionClick;
+
+    $("stealBtn").onclick = stealPoints;
+    $("giftBtn").onclick = giftPoints;
+    $("doubleBtn").onclick = buyDouble;
+    $("shieldBtn").onclick = buyShield;
+    $("luckBtn").onclick = luckSpin;
+    $("swapBtn").onclick = swapPoints;
+
+    $("submitRequestBtn").onclick = submitRequest;
+    $("globalEventBtn").onclick = globalEvent;
+    $("applyModBtn").onclick = modifyPoints;
+
+    // Keep dashboard synced if localStorage changes in another tab.
+    window.addEventListener("storage", () => {
+      if (state.currentUser) refreshDashboard();
+    });
+
+    // ---------- Boot ----------
+    initData();
+    initNumberGuess();
+    const savedUser = localStorage.getItem(LS_CURRENT);
+    if (savedUser) {
+      state.currentUser = savedUser;
+      showView(true);
+      refreshDashboard();
+      showSection("gamesSection");
+    } else {
+      showView(false);
+    }
+  </script>
+</body>
+</html>
