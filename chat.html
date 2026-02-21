@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat | Realtime Messenger</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <section class="chat-shell">
+        <header class="chat-header topbar" style="margin: 0">
+          <button class="btn secondary" id="chat-back-btn">Back</button>
+          <h2 id="chat-title" style="margin: 0">Chat</h2>
+        </header>
+
+        <section id="messages" class="messages"></section>
+
+        <form id="message-form" class="chat-input">
+          <input id="message-input" type="text" placeholder="Type your message" required />
+          <button class="btn" type="submit">Send</button>
+        </form>
+      </section>
+      <p id="chat-error" class="error"></p>
+    </main>
+
+    <div id="guide-root"></div>
+    <script type="module" src="js/pages/chat.js"></script>
+  </body>
+</html>

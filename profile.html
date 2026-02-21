@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile | Realtime Messenger</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <section class="card profile-view">
+        <p id="profile-error" class="error"></p>
+        <div class="profile-large-emoji" id="profile-emoji">🙂</div>
+        <h2 id="profile-username">@username</h2>
+        <p id="profile-display-name" style="color: #bdbdbd">Display Name</p>
+        <div style="display: flex; gap: 0.5rem; margin-top: 1rem">
+          <button class="btn secondary" id="back-btn">Back</button>
+          <button class="btn" id="chat-btn">Chat</button>
+        </div>
+      </section>
+    </main>
+
+    <div id="guide-root"></div>
+    <script type="module" src="js/pages/profile.js"></script>
+  </body>
+</html>
