@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard | Realtime Messenger</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <header class="topbar">
+        <div>
+          <h1>User Catalog</h1>
+          <p style="color: #bdbdbd">Choose a user to view profile and start chatting.</p>
+        </div>
+        <button class="btn danger" id="logout-btn">Logout</button>
+      </header>
+
+      <section id="users-grid" class="grid"></section>
+    </main>
+
+    <div id="guide-root"></div>
+    <script type="module" src="js/pages/dashboard.js"></script>
+  </body>
+</html>
