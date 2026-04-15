@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Faceless Creator Studio | Service</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body data-page="service">
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+
+    <main class="page-shell fade-in-up">
+      <header class="glass-card top-bar sticky">
+        <h1 id="serviceTitle">Service</h1>
+        <div class="button-row">
+          <button id="saveBtn" class="btn glow">Save</button>
+          <button id="copyLinkBtn" class="btn">Copy Link</button>
+          <a class="btn" href="dashboard.html">Dashboard</a>
+        </div>
+      </header>
+
+      <section class="glass-card plan-switcher">
+        <button id="freeBtn" class="btn active">Free</button>
+        <button id="paidBtn" class="btn">Paid</button>
+      </section>
+
+      <section id="toolContainer" class="tool-grid"></section>
+    </main>
+
+    <div id="loader" class="loader-overlay hidden">
+      <div class="loader"></div>
+      <p>Preparing tools...</p>
+    </div>
+
+    <div id="toast" class="toast"></div>
+    <script src="script.js"></script>
+  </body>
+</html>
